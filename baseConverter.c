@@ -1,15 +1,22 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-// Function uses XOR to swap positions in string
-void reverseBinaryString(char* str) {
+
+// Helper function to find the length of strings
+int stringLen(char* str) {
     int len = 0;
-    
+
     while(1) {
-        len++; 
+        len++;
         if (str[len] == '\0') break;
     }
-        
+    return len;
+}
+
+// Function uses XOR to swap positions in string
+void reverseBinaryString(char* str) {
+    int len = stringLen(str);
+
     for (int i = 0; i < len / 2; i++) {
         str[i] = str[i] ^ str[len - 1 - i];
         str[len- 1 - i] = str[len - 1 -i] ^ str[i]; 
@@ -36,13 +43,26 @@ char* decimalToBinary(int decimal) {
     return binary;
 }
 
+int binaryToDecimal(char* binary) {
+    int decimal = 0;
+    int len = stringLen(binary);
+    
+    for (int i = 0; i < len; i++ ) {
+        decimal = decimal * 2 + (binary[i] - '0');
+    }       
+    
+    return decimal;
+}
+
 int main() {
     const int values[] = {14, 546, 312};
 
     for (int i = 0; i < 3; i++) {
         char* result = decimalToBinary(values[i]);
+        int decimal = binaryToDecimal(result);
         if (result) {
             printf("%d = %s\n", values[i], result);
+            printf("%s = %d\n", result, values[i]);
             free(result);
         }
         
