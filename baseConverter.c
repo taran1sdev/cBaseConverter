@@ -79,6 +79,26 @@ char* hexToBinary(char* hex) {
     return decimalToBinary(total);
 }
 
+char* binaryToHex(char* binary) {
+    char* hexDigits = "0123456789ABCDEF";
+    
+    // convert the binary to decimal format
+    int decimal = binaryToDecimal(binary);
+    
+    // allocate memory to store a 32-bit hex number  
+    char* result = (char*)malloc(9);
+    
+    int i = 0;
+    while(decimal) {
+        result[i++] = hexDigits[decimal % 16];
+        decimal /= 16;
+    }
+    
+    result[i] = '\0';
+    reverseBinaryString(result);
+    return result;
+}
+
 int main() {
     const int values[] = {14, 546, 312};
 
@@ -93,5 +113,17 @@ int main() {
         
     }   
     
+
+    char* hex = "1F44";
+    char* result = hexToBinary(hex);
+    char* result2 = binaryToHex(result);
+
+    printf("%s = %s\n", hex, result);
+    printf("%s = %s\n", result, result2);
+
+    free(result);
+    free(result2); 
+
+
     return 0;
 }
