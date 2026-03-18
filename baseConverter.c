@@ -54,6 +54,31 @@ int binaryToDecimal(char* binary) {
     return decimal;
 }
 
+char* hexToBinary(char* hex) {
+    int len = stringLen(hex);
+    // Track the position of the number (*16 each time)
+    int pos = 1;
+    int total = 0;
+
+    // Loop backwards and convert hex to decimal before converting to binary
+    for (int i = len - 1; i >= 0; i--) {
+        int decimal;
+        if ((int)hex[i] > 64) {
+            // add 10*pos to the total and convert to digit
+            decimal = hex[i] - 'A';
+            total += (10 * pos);
+        } else {
+            decimal = hex[i] - '0';
+        }
+        printf("%d\n", total); 
+        total += (decimal * pos);
+        pos *= 16;
+    } 
+    
+    // Use existing decimal to binary to convert the hex total to binary 
+    return decimalToBinary(total);
+}
+
 int main() {
     const int values[] = {14, 546, 312};
 
@@ -62,10 +87,11 @@ int main() {
         int decimal = binaryToDecimal(result);
         if (result) {
             printf("%d = %s\n", values[i], result);
-            printf("%s = %d\n", result, values[i]);
+            printf("%s = %d\n", result, decimal);
             free(result);
         }
         
-    }    
+    }   
+    
     return 0;
 }
