@@ -14,7 +14,7 @@ int stringLen(char* str) {
 }
 
 // Function uses XOR to swap positions in string
-void reverseBinaryString(char* str) {
+void reverseString(char* str) {
     int len = stringLen(str);
 
     for (int i = 0; i < len / 2; i++) {
@@ -39,7 +39,7 @@ char* decimalToBinary(int decimal) {
     }
 
     binary[i] = '\0';
-    reverseBinaryString(binary); 
+    reverseString(binary); 
     return binary;
 }
 
@@ -70,7 +70,6 @@ char* hexToBinary(char* hex) {
         } else {
             decimal = hex[i] - '0';
         }
-        printf("%d\n", total); 
         total += (decimal * pos);
         pos *= 16;
     } 
@@ -80,14 +79,15 @@ char* hexToBinary(char* hex) {
 }
 
 char* binaryToHex(char* binary) {
-    char* hexDigits = "0123456789ABCDEF";
+    const char* hexDigits = "0123456789ABCDEF";
     
     // convert the binary to decimal format
     int decimal = binaryToDecimal(binary);
     
     // allocate memory to store a 32-bit hex number  
     char* result = (char*)malloc(9);
-    
+    if (!result) return NULL;
+
     int i = 0;
     while(decimal) {
         result[i++] = hexDigits[decimal % 16];
@@ -95,35 +95,88 @@ char* binaryToHex(char* binary) {
     }
     
     result[i] = '\0';
-    reverseBinaryString(result);
+    reverseString(result);
     return result;
 }
 
+int parseDecimalString(char* str) {
+    int len = stringLen(str);
+    int pos = 1;
+    int total = 0;
+
+    for (int i = len - 1; i >= 0; i--) {
+        int decimal = str[i] - '0';
+        total += (decimal * pos);
+        pos *= 10;
+    }
+
+    return total;
+}
+
 int main() {
-    const int values[] = {14, 546, 312};
+    int option;
 
-    for (int i = 0; i < 3; i++) {
-        char* result = decimalToBinary(values[i]);
-        int decimal = binaryToDecimal(result);
-        if (result) {
-            printf("%d = %s\n", values[i], result);
-            printf("%s = %d\n", result, decimal);
-            free(result);
+    while(1) {        
+        printf("\nNumber base converter\n");
+        printf("---- Menu ----\n");
+        printf("1] Decimal to Binary\n");
+        printf("2] Binary to Decimal\n");
+        printf("3] Hex to Binary\n");
+        printf("4] Binary to Hex\n");
+        printf("5] Exit\n");
+       
+        scanf("%d", &option);
+
+        if (option == 5) {
+           printf("Goodbye.\n");
+           break; 
         }
-        
-    }   
-    
 
-    char* hex = "1F44";
-    char* result = hexToBinary(hex);
-    char* result2 = binaryToHex(result);
+        char input[40];
+        switch (option) {
+            case 1: 
+                printf("Enter a decimal number: ");
+                scanf("%s", &input);
+                int decimal = parseDecimalString(input);
+                char* result = decimalToBinary(decimal);
+                printf("%s\n", result);
+                free(result);
+                break;
+            case 2: 
+                printf("Enter a binary number (32-bit max): ");
+                scanf("%s", &input);
+                int len = stringLen(input);
+                if (len > 33) {
+                    printf("Too long.\n");
+                    break;
+                }
+                int decResult = binaryToDecimal(input);
+                printf("%d\n", decResult);
+                break;
+            case 3:
+                printf("Enter a Hexadecimal number: ");
+                scanf("%s", &input);
+                result = hexToBinary(input);
+                printf("%s\n", result);
+                free(result);
+                break;
+            case 4:
+                printf("Enter a Binary number (32-bit max): ");
+                scanf("%s", &input);
+                len = stringLen(input);
+                if (len > 33) {
+                    printf("Too long.\n");
+                    break;
+                }
+                result = binaryToHex(input);
+                printf("%s", result);
+                free(result);
+                break;
+            default:
+                printf("Invalid input, please try again..\n");
+        }
+    } 
 
-    printf("%s = %s\n", hex, result);
-    printf("%s = %s\n", result, result2);
-
-    free(result);
-    free(result2); 
-
-
+           
     return 0;
 }
